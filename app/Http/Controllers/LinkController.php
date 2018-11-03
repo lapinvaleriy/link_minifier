@@ -42,6 +42,19 @@ class LinkController extends Controller
         ];
     }
 
+    public function show()
+    {
+        $user = auth()->user();
+        $userLinks = null;
+
+        if ($user !== null) {
+            $userLinks = $this->linkService->findUserLinks($user);
+        }
+
+        return view('main', [
+            'user_links' => $userLinks
+        ]);
+    }
 
     public function delete(Request $request)
     {

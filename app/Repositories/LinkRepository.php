@@ -20,4 +20,12 @@ class LinkRepository
         $link->short_url = $shortUrl;
         $link->save();
     }
+
+    public function findLinksByUserId($userId)
+    {
+        $links = Link::select('root_url', 'short_url', 'expiry_date', 'created_at')
+            ->where('user_id', $userId)->get();
+
+        return $links;
+    }
 }

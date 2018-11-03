@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Repositories\LinkRepository;
 use App\Repositories\UserRepository;
 
 class UserService

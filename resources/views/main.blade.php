@@ -12,20 +12,30 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">URL minifier</a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Главная <span class="sr-only">(current)</span></a>
+    <nav class="navbar navbar-expand-sm bg-light navbar-light">
+        <a class="navbar-brand" href="#">Сокращатель</a>
+
+        <ul class="navbar-nav mr-auto"></ul>
+
+        <ul class="navbar-nav float-right">
+            @guest
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="document.getElementById('loginform').style.display='block';">Войти</a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Статистика <span class="sr-only">(current)</span></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="document.getElementById('regform').style.display='block';">Регистрация</a>
                 </li>
-            </ul>
-        </div>
+            @endguest
+
+            @auth
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url('/logout')}}">Выход</a>
+                </li>
+            @endauth
+        </ul>
     </nav>
 </header>
+
 <div class="main-contrainer">
     <div class="container">
         <br>
@@ -36,6 +46,18 @@
                    placeholder="Введите url">
             <button type="button" id="result_btn" onclick="getShortUrl()">Cократить</button>
         </div>
+
+        @auth
+            <div class="individual">
+                <span>Хотите индивидуальную ссылку?</span>
+                <button type="button" id="indiv_yes" class="btn btn-light">Да</button>
+                <a href="#" data-toggle="tooltip" title="Вы можете создать свою индивидульную ссылку">Что это значит?</a>
+                <div id="panel">
+                    Hello world
+                </div>
+            </div>
+        @endauth
+
         <br>
         <div>
             <input style="width: 70%;background-color: #ffffff" class="form-control" id="result" readonly
@@ -48,14 +70,48 @@
 <br>
 <br>
 <br>
-<div class="">
-    <h3 style="text-align: center">Хотите возможность создавать индивидуальные ссылки? А также увидеть историю и
-        статистику? <a href="#" onclick="document.getElementById('loginform').style.display='block';">Войдите</a></h3>
-</div>
+
+@auth
+    <div class="container">
+        <h2>Ваши ссылки</h2>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th></th>
+                    <th>Lastname</th>
+                    <th>Age</th>
+                    <th>City</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Anna</td>
+                    <td>Pitt</td>
+                    <td>35</td>
+                    <td>New York</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+@endauth
+
+@guest
+    <div class="container">
+        <h3 style="text-align: center">Хотите иметь возможность создавать индивидуальные ссылки? А также просматривать
+            историю и
+            статистику? <a href="#" onclick="document.getElementById('loginform').style.display='block';">Войдите</a>
+        </h3>
+    </div>
+@endguest
 
 
 <div id="loginform" class="login-modal">
     <form class="login-modal-content modal-animate">
+        <span onclick="document.getElementById('loginform').style.display='none'" class="login-close">&times;</span>
         <h3 class="top-text">Вход</h3>
         <div class="login-container">
             <input class="login-input" type="text" placeholder="Введите email..." name="username" id="login-uname"
@@ -74,6 +130,7 @@
 
 <div id="regform" class="login-modal">
     <form class="login-modal-content modal-animate" action="{{'UserController@register'}}">
+        <span onclick="document.getElementById('regform').style.display='none'" class="login-close">&times;</span>
         <h3 class="top-text">Регистрация</h3>
         <div class="login-container">
             <input class="login-input" type="text" placeholder="Ваш email" id="reg-email" required>
@@ -87,6 +144,16 @@
 
 
 <script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    $(document).ready(function(){
+        $("#indiv_yes").click(function(){
+            $("#panel").slideToggle("slow");
+        });
+    });
+
     function getShortUrl() {
         let rootUrl = $("#root").val();
         $('#result').val('');
@@ -128,6 +195,7 @@
             success: function (data) {
                 if (data.status === 'success') {
                     $("#loginform").hide();
+                    location.reload();
                 } else if (data.status === 'failed') {
                     $("#login-failed").text(data.msg);
                 }
@@ -183,30 +251,9 @@
     }
 
     function openRegModal() {
-        let modal = document.getElementById('loginform');
-        modal.style.display = "none";
-
-        document.getElementById('regform').style.display = 'block';
+        $("#loginform").hide();
+        $("#regform").show();
     }
-
-    // // Get the modal
-    // let modal = document.getElementById('loginform');
-    //
-    // // When the user clicks anywhere outside of the modal, close it
-    // window.onclick = function (event) {
-    //     if (event.target == modal) {
-    //         modal.style.display = "none";
-    //     }
-    // }
-
-    // let regmodal = document.getElementById('regform');
-    //
-    // // When the user clicks anywhere outside of the modal, close it
-    // window.onclick = function (event) {
-    //     if (event.target == regmodal) {
-    //         regmodal.style.display = "none";
-    //     }
-    // }
 </script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

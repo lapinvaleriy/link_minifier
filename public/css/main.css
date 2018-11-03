@@ -19,3 +19,28 @@ h1 {
     font-size: 18px;
     font-weight: 500;
 }
+
+.individual {
+    /*margin-left: 50px;*/
+    /*margin-top: -15px;*/
+}
+
+.individual span {
+    font-size: 20px;
+    color: #fff;
+}
+
+.individual a{
+    display: block;
+    font-size: 13px;
+    padding-top: -15px;
+    color: #c3c3c3;
+}
+
+#panel {
+    /*padding: 50px;*/
+    display: none;
+    /*text-align: center;*/
+    background-color: #ffffff;
+    /*border: solid 1px #c3c3c3;*/
+}

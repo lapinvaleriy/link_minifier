@@ -30,7 +30,9 @@ class UserController extends Controller
         ];
 
         if (auth()->attempt($credentials)) {
-            return ['status' => 'success'];
+            return [
+                'status' => 'success',
+            ];
         }
 
         return [
@@ -52,5 +54,12 @@ class UserController extends Controller
         $result = $this->userService->create($email, $password);
 
         return $result;
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+
+        return redirect('/');
     }
 }

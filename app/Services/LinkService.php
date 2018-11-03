@@ -39,6 +39,11 @@ class LinkService
         return $shortUrl;
     }
 
+    public function findUserLinks($user)
+    {
+        return $this->linkRepository->findLinksByUserId($user->id);
+    }
+
     private function isRootUrlCorrect($rootUrl)
     {
         $client = new Client();
