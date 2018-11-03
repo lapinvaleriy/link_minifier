@@ -17,6 +17,7 @@ class CreateLinksTable extends Migration
             $table->increments('id');
             $table->string('root_url');
             $table->string('short_url')->unique();
+            $table->date('expiry_date')->nullable();
             $table->integer('user_id')->nullable();
             $table->timestamps();
         });

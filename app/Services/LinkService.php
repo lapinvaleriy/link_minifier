@@ -11,7 +11,7 @@ namespace App\Services;
 
 class LinkService
 {
-    public function create()
+    public function create($rootUrl, $isExpire = false)
     {
 
     }

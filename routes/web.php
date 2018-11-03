@@ -14,3 +14,5 @@
 Route::get('/', function () {
     return view('main');
 });
+
+Route::post('/minify', 'LinkController@minify');
