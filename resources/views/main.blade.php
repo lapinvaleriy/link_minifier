@@ -55,22 +55,32 @@
 
 
 <div id="loginform" class="login-modal">
-    {{--<span onclick="document.getElementById('loginform').style.display='none'"--}}
-    {{--class="close" title="Close Modal">&times;</span>--}}
-
-    <form class="login-modal-content modal-animate" action="{{'UserController@login'}}">
+    <form class="login-modal-content modal-animate">
         <h3 class="top-text">Вход</h3>
         <div class="login-container">
-            <input class="login-input" type="text" placeholder="Введите email..." name="username" required>
-            <input class="login-input" type="password" placeholder="Введите пароль..." name="password" required>
-            <button class="login-button" type="submit">Войти</button>
+            <input class="login-input" type="text" placeholder="Введите email..." name="username" id="login-uname"
+                   required>
+            <input class="login-input" type="password" placeholder="Введите пароль..." name="password" id="login-pwd"
+                   required>
+            <input type="button" class="login-button" onclick="loginUser()" value="Вход">
+            <div id="login-failed"></div>
         </div>
-
         <div class="login-container" style="background-color:#f1f1f1">
-            <button type="button" onclick="document.getElementById('loginform').style.display='none'"
-                    class="modal">Закрыть
-            </button>
-            <span>Нет аккаунта? <a href="#">Регистрация</a></span>
+            <span>Нет аккаунта? <a href="#" onclick="openRegModal()">Регистрация</a></span>
+        </div>
+    </form>
+</div>
+
+
+<div id="regform" class="login-modal">
+    <form class="login-modal-content modal-animate" action="{{'UserController@register'}}">
+        <h3 class="top-text">Регистрация</h3>
+        <div class="login-container">
+            <input class="login-input" type="text" placeholder="Ваш email" id="reg-email" required>
+            <input class="login-input" type="password" placeholder="Пароль" id="reg-psw" required minlength="6"
+                   maxlength="14">
+            <input type="button" class="login-button" onclick="registerUser()" value="Регистрация">
+            <div id="reg-failed"></div>
         </div>
     </form>
 </div>
@@ -101,6 +111,55 @@
         });
     }
 
+    function loginUser() {
+        let email = $("#login-uname").val();
+        let password = $("#login-pwd").val();
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'POST',
+            url: '/login',
+            data: {
+                "email": email,
+                "password": password
+            },
+            success: function (data) {
+                if (data.status === 'success') {
+                    $("#loginform").hide();
+                } else if (data.status === 'failed') {
+                    $("#login-failed").text(data.msg);
+                }
+            }
+        });
+    }
+
+    function registerUser() {
+        let email = $("#reg-email").val();
+        let password = $("#reg-psw").val();
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'POST',
+            url: '/register',
+            data: {
+                "email": email,
+                "password": password
+            },
+            success: function (data) {
+                if (data.status === 'success') {
+                    $("#regform").hide();
+                } else if (data.status === 'failed') {
+                    $("#reg-failed").text(data.msg);
+                }
+            }
+        });
+    }
+
+
     function showSnackbar(status, msg) {
         let snackBar;
 
@@ -123,15 +182,31 @@
         }, 3000);
     }
 
-    // Get the modal
-    let modal = document.getElementById('loginform');
+    function openRegModal() {
+        let modal = document.getElementById('loginform');
+        modal.style.display = "none";
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+        document.getElementById('regform').style.display = 'block';
     }
+
+    // // Get the modal
+    // let modal = document.getElementById('loginform');
+    //
+    // // When the user clicks anywhere outside of the modal, close it
+    // window.onclick = function (event) {
+    //     if (event.target == modal) {
+    //         modal.style.display = "none";
+    //     }
+    // }
+
+    // let regmodal = document.getElementById('regform');
+    //
+    // // When the user clicks anywhere outside of the modal, close it
+    // window.onclick = function (event) {
+    //     if (event.target == regmodal) {
+    //         regmodal.style.display = "none";
+    //     }
+    // }
 </script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

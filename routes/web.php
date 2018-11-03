@@ -15,8 +15,6 @@ Route::get('/', function () {
     return view('main');
 });
 
-Route::get('/login', function () {
-    return view('login');
-});
-
 Route::post('/minify', 'LinkController@create');
+Route::post('/login', 'UserController@login');
+Route::post('/register', 'UserController@create');
