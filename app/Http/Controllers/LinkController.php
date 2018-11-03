@@ -24,32 +24,27 @@ class LinkController extends Controller
         ]);
 
         $rootUrl = $request->root_url;
-//        $expiryDate = $request->$expiryDate
+        $baseUrl = $request->root();
 
-        $this->linkService->create();
+        $result = $this->linkService->create($rootUrl, $baseUrl, null);
 
+        if ($result === false) {
+            return [
+                'status' => 'failed',
+                'msg' => 'Такого url не существует'
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'result' => $result,
+            'msg' => 'Короткая ссылка успешно сгенерирована'
+        ];
     }
 
 
     public function delete(Request $request)
     {
 
-    }
-
-    public function minify(Request $request)
-    {
-        $url = $request->root_url;
-
-        if ($url === 'hello') {
-            return [
-                'status' => 'success',
-                'msg' => 'hello, how r u'
-            ];
-        }
-
-        return [
-            'status' => 'failed',
-            'msg' => 'Такого url не существует'
-        ];
     }
 }

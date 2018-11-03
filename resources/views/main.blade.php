@@ -6,114 +6,9 @@
     <title>URL minimizer</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <style>/* The snackbar - position it at the bottom and in the middle of the screen */
-        #successSnackbar {
-            visibility: hidden; /* Hidden by default. Visible on click */
-            min-width: 250px; /* Set a default minimum width */
-            margin-left: -125px; /* Divide value of min-width by 2 */
-            background-color: green; /* Black background color */
-            color: #fff; /* White text color */
-            text-align: center; /* Centered text */
-            border-radius: 2px; /* Rounded borders */
-            padding: 16px; /* Padding */
-            position: fixed; /* Sit on top of the screen */
-            z-index: 1; /* Add a z-index if needed */
-            /*left: 50%; !* Center the snackbar *!*/
-            right: 30px; /* 30px from the bottom */
-        }
-
-        #failedSnackbar {
-            visibility: hidden; /* Hidden by default. Visible on click */
-            min-width: 250px; /* Set a default minimum width */
-            margin-left: -125px; /* Divide value of min-width by 2 */
-            background-color: #b52610; /* Black background color */
-            color: #fff; /* White text color */
-            text-align: center; /* Centered text */
-            border-radius: 2px; /* Rounded borders */
-            padding: 16px; /* Padding */
-            position: fixed; /* Sit on top of the screen */
-            z-index: 1; /* Add a z-index if needed */
-            /*left: 50%; !* Center the snackbar *!*/
-            right: 30px; /* 30px from the bottom */
-        }
-
-        /* Show the snackbar when clicking on a button (class added with JavaScript) */
-        #successSnackbar.show, #failedSnackbar.show {
-            visibility: visible; /* Show the snackbar */
-            /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
-           However, delay the fade out process for 2.5 seconds */
-            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-
-        /* Animations to fade the snackbar in and out */
-        @-webkit-keyframes fadein {
-            from {
-                right: 0;
-                opacity: 0;
-            }
-            to {
-                right: 30px;
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadein {
-            from {
-                right: 0;
-                opacity: 0;
-            }
-            to {
-                right: 30px;
-                opacity: 1;
-            }
-        }
-
-        @-webkit-keyframes fadeout {
-            from {
-                right: 30px;
-                opacity: 1;
-            }
-            to {
-                right: 0;
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeout {
-            from {
-                right: 30px;
-                opacity: 1;
-            }
-            to {
-                right: 0;
-                opacity: 0;
-            }
-        }
-
-        .main-contrainer {
-            width: 100%;
-            height: 350px;
-            background: #6200EE;
-        }
-
-        h1 {
-            color: #f7f7f7;
-        }
-
-        #result_btn {
-            width: 150px;
-            height: 40px;
-            margin-left: 30px;
-            border: 1px solid #fff;
-            border-radius: 3px;
-            background: #f7f7f7;
-            color: #7646bb;
-            font-size: 18px;
-            font-weight: 500;
-        }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url('/css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url('/css/snackbar.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url('/css/loginModal.css') }}">
 </head>
 <body>
 <header>
@@ -143,7 +38,8 @@
         </div>
         <br>
         <div>
-            <input style="width: 70%" class="form-control" id="result" placeholder="Результат...">
+            <input style="width: 70%;background-color: #ffffff" class="form-control" id="result" readonly
+                   placeholder="Результат...">
             <div id="successSnackbar"></div>
             <div id="failedSnackbar"></div>
         </div>
@@ -153,12 +49,37 @@
 <br>
 <br>
 <div class="">
-    <h3 style="text-align: center">Хотите увидеть историю и статистику? <a href="">Войдите</a></h3>
+    <h3 style="text-align: center">Хотите возможность создавать индивидуальные ссылки? А также увидеть историю и
+        статистику? <a href="#" onclick="document.getElementById('loginform').style.display='block';">Войдите</a></h3>
 </div>
+
+
+<div id="loginform" class="login-modal">
+    {{--<span onclick="document.getElementById('loginform').style.display='none'"--}}
+    {{--class="close" title="Close Modal">&times;</span>--}}
+
+    <form class="login-modal-content modal-animate" action="{{'UserController@login'}}">
+        <h3 class="top-text">Вход</h3>
+        <div class="login-container">
+            <input class="login-input" type="text" placeholder="Введите email..." name="username" required>
+            <input class="login-input" type="password" placeholder="Введите пароль..." name="password" required>
+            <button class="login-button" type="submit">Войти</button>
+        </div>
+
+        <div class="login-container" style="background-color:#f1f1f1">
+            <button type="button" onclick="document.getElementById('loginform').style.display='none'"
+                    class="modal">Закрыть
+            </button>
+            <span>Нет аккаунта? <a href="#">Регистрация</a></span>
+        </div>
+    </form>
+</div>
+
 
 <script>
     function getShortUrl() {
         let rootUrl = $("#root").val();
+        $('#result').val('');
 
         $.ajax({
             headers: {
@@ -171,10 +92,9 @@
             },
             success: function (data) {
                 if (data.status === 'success') {
-                    $("#result").html(data.result);
+                    $("#result").val(data.result);
                     showSnackbar(data.status, data.msg);
                 } else if (data.status === 'failed') {
-                    // $("#result").html(data.result); ОЧИСТИТЬ
                     showSnackbar(data.status, data.msg);
                 }
             }
@@ -201,6 +121,16 @@
         setTimeout(function () {
             snackBar.className = snackBar.className.replace("show", "");
         }, 3000);
+    }
+
+    // Get the modal
+    let modal = document.getElementById('loginform');
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
     }
 </script>
 

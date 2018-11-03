@@ -14,7 +14,7 @@ class RandomGenerator
     private const ALLOWED_CHARACTERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     private const CODE_LENGHT = 6;
 
-    public static function generateSmsCode()
+    public static function generateCode()
     {
         $charactersLength = strlen(self::ALLOWED_CHARACTERS);
         $generatedCode = '';
