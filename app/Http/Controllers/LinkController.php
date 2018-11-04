@@ -2,62 +2,86 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ShortUrlAlreadyExistsException;
+use App\Exceptions\UrlDoesNotExistException;
+use App\Models\Link;
 use App\Services\LinkService;
+use App\Services\StatisticsService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class LinkController extends Controller
 {
-    /**
-     * @var LinkService
-     */
-    private $linkService;
 
-    public function __construct(LinkService $linkService)
+    private $linkService;
+    private $statisticsService;
+
+    public function __construct(LinkService $linkService, StatisticsService $statisticsService)
     {
         $this->linkService = $linkService;
+        $this->statisticsService = $statisticsService;
     }
 
     public function create(Request $request)
     {
         $request->validate([
-            'root_url' => 'required|max:255',
+            'root_url' => 'required|url',
         ]);
 
         $rootUrl = $request->root_url;
-        $baseUrl = $request->root();
+        $customUrl = $request->custom_url;
+        $expiryDate = $request->expiry_date;
 
-        $result = $this->linkService->create($rootUrl, $baseUrl, null);
+        try {
+            $result = $this->linkService->create($rootUrl, $customUrl, $expiryDate);
 
-        if ($result === false) {
-            return [
-                'status' => 'failed',
-                'msg' => 'Такого url не существует'
-            ];
+            $shortUrl = $request->root() . '/' . $result;
+            $statUrl = $request->root() . '/stat/' . $result;
+            $status = 'success';
+            $msg = 'Ok';
+        } catch (ShortUrlAlreadyExistsException $e) {
+            $shortUrl = null;
+            $statUrl = null;
+            $status = 'failed';
+            $msg = $e->getMessage();
+        } catch (UrlDoesNotExistException $e) {
+            $shortUrl = null;
+            $statUrl = null;
+            $status = 'failed';
+            $msg = $e->getMessage();
         }
 
         return [
-            'status' => 'success',
-            'result' => $result,
-            'msg' => 'Короткая ссылка успешно сгенерирована'
+            'status' => $status,
+            'short_url' => $shortUrl,
+            'stat_url' => $statUrl,
+            'msg' => $msg
         ];
     }
 
     public function show()
     {
-        $user = auth()->user();
-        $userLinks = null;
-
-        if ($user !== null) {
-            $userLinks = $this->linkService->findUserLinks($user);
-        }
-
-        return view('main', [
-            'user_links' => $userLinks
-        ]);
+        return view('main');
     }
 
-    public function delete(Request $request)
+    public function redirect(Request $request, $url)
     {
+        $link = Link::where('short_url', $url)->first();
 
+        if ($link === null) {
+            return view('error', [
+                'error_msg' => 'Такой ссылки не существует'
+            ]);
+        }
+
+        if ($link->expiry_date !== null && $link->expiry_date < Carbon::now()) {
+            return view('error', [
+                'error_msg' => 'Срок действия ссылки истек'
+            ]);
+        }
+
+        $this->statisticsService->addStat($link, $request);
+
+        return redirect($link->root_url);
     }
 }

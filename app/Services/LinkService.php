@@ -9,7 +9,8 @@
 namespace App\Services;
 
 
-use App\Models\Link;
+use App\Exceptions\ShortUrlAlreadyExistsException;
+use App\Exceptions\UrlDoesNotExistException;
 use App\Repositories\LinkRepository;
 use App\Utils\RandomGenerator;
 use Exception;
@@ -27,21 +28,33 @@ class LinkService
         $this->linkRepository = $linkRepository;
     }
 
-    public function create($rootUrl, $baseUrl, $expiryDate)
+    /**
+     * @param $rootUrl
+     * @param $customUrl
+     * @param $expiryDate
+     * @return string
+     * @throws ShortUrlAlreadyExistsException
+     * @throws UrlDoesNotExistException
+     */
+    public function create($rootUrl, $customUrl, $expiryDate)
     {
         if (!$this->isRootUrlCorrect($rootUrl)) {
-            return false;
+            throw new UrlDoesNotExistException();
         }
 
-        $shortUrl = $this->generateShortUrl($baseUrl);
+        if ($customUrl != null) {
+            if ($this->linkRepository->isShortLinkExists($customUrl)) {
+                throw new ShortUrlAlreadyExistsException();
+            }
+
+            $shortUrl = $customUrl;
+        } else {
+            $shortUrl = $this->generateShortUrl();
+        }
+
         $this->linkRepository->create($rootUrl, $shortUrl, $expiryDate);
 
         return $shortUrl;
-    }
-
-    public function findUserLinks($user)
-    {
-        return $this->linkRepository->findLinksByUserId($user->id);
     }
 
     private function isRootUrlCorrect($rootUrl)
@@ -61,17 +74,11 @@ class LinkService
         return false;
     }
 
-    private function generateShortUrl($baseUrl)
+    private function generateShortUrl()
     {
         //TODO check here if unique code is already exist in db and regenerate if true
-        $uniqueCode = RandomGenerator::generateCode();
-        $shortUrl = $baseUrl . '/' . $uniqueCode;
+        $shortUrl = RandomGenerator::generateCode();
 
         return $shortUrl;
-    }
-
-    public function delete()
-    {
-
     }
 }

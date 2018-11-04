@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', 'LinkController@show');
-
+Route::get('/', 'LinkController@show')->name('main');
+Route::get('/stat', 'StatisticsController@show');
+Route::get('/stat/{url}', 'StatisticsController@info');
+Route::get('/get_data', 'StatisticsController@getData');
+Route::get('{url}', 'LinkController@redirect');
 Route::post('/minify', 'LinkController@create');
-Route::post('/login', 'UserController@login');
-Route::get('/logout', 'UserController@logout');
-Route::post('/register', 'UserController@create');

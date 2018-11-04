@@ -1,6 +1,6 @@
-.main-contrainer {
+.stat_container {
     width: 100%;
-    height: 550px;
+    height: 200px;
     background: #6200EE;
 }
 
@@ -18,16 +18,4 @@ h1 {
     color: #7646bb;
     font-size: 18px;
     font-weight: 500;
-}
-
-.stat_container {
-    width: 100%;
-    height: 200px;
-    background: #6200EE;
-}
-
-.err_container {
-    width: 100%;
-    height: 200px;
-    background: #6200EE;
 }

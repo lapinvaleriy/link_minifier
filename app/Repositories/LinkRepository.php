@@ -18,14 +18,14 @@ class LinkRepository
         $link = new Link();
         $link->root_url = $rootUrl;
         $link->short_url = $shortUrl;
+        $link->expiry_date = $expiryDate;
         $link->save();
     }
 
-    public function findLinksByUserId($userId)
+    public function isShortLinkExists($shortUrl)
     {
-        $links = Link::select('root_url', 'short_url', 'expiry_date', 'created_at')
-            ->where('user_id', $userId)->get();
+        $link = Link::where('short_url', $shortUrl)->first();
 
-        return $links;
+        return $link === null ? false : true;
     }
 }
