@@ -29,7 +29,8 @@
         <br>
         <form action="{{ action('LinkController@create') }}" method="POST">
             <div class="input-group mb-3">
-                <input type="url" required="required" style="max-width: 70%" id="root" name="root" class="form-control"
+                <input type="url" required="required" style="max-width: 70%" id="root_url" name="root_url"
+                       class="form-control"
                        placeholder="Введите url">
                 <input type="submit" id="result_btn" value="Сократить">
             </div>
@@ -74,7 +75,7 @@
 
         $('form').submit(function (event) {
 
-            let rootUrl = $("#root").val();
+            let rootUrl = $("#root_url").val();
             let customUrl = $("#custom_url").val();
             let expiryDate = $("#expiry_date").val();
             $('#result').val('');

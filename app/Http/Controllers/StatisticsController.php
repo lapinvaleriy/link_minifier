@@ -58,6 +58,8 @@ class StatisticsController extends Controller
             ];
         }
 
+        $count = count($data);
+
         foreach ($data as $dat) {
             $countries[] = $dat->country;
             $browsers[] = $dat->browser;
@@ -107,6 +109,7 @@ class StatisticsController extends Controller
 
         return [
             'result' => [
+                'count' => $count,
                 'countries' => [
                     'labels' => array_keys($c),
                     'count' => array_values($c)

@@ -26,30 +26,40 @@
         <br>
         <h1>Статистика</h1>
         <br>
-        <form>
+        <form action="{{action('StatisticsController@getData')}}" method="get">
             <div class="input-group mb-3">
                 <input style="max-width: 70%" id="short_url" name="short_url" required type="url" maxlength="250"
                        class="form-control"
                        placeholder="Введите url">
-                <input type="submit" id="result_btn" onclick="getData(null)" value="Показать">
+                <input type="submit" id="result_btn" value="Показать">
             </div>
         </form>
     </div>
     <div id="successSnackbar"></div>
     <div id="failedSnackbar"></div>
 </div>
-<div class="container">
-    <div class=" col-md-6">
-        <canvas id="countries-chart" width="400" height="250"></canvas>
+<div class="container" style="text-align: center">
+    <br>
+    <span style="font-size: 30px" id="count_text"></span>
+    <br>
+    <br>
+    <div class="row">
+        <div class=" col-md-6">
+            <canvas id="countries-chart" width="400" height="250"></canvas>
+        </div>
+        <div class=" col-md-6">
+            <canvas id="languages-chart" width="400" height="250"></canvas>
+        </div>
     </div>
-    <div class=" col-md-6">
-        <canvas id="languages-chart" width="400" height="250"></canvas>
-    </div>
-    <div class=" col-md-6">
-        <canvas id="browsers-chart" width="400" height="250"></canvas>
-    </div>
-    <div class=" col-md-6">
-        <canvas id="platforms-chart" width="400" height="250"></canvas>
+    <br>
+    <br>
+    <div class="row">
+        <div class=" col-md-6">
+            <canvas id="browsers-chart" width="400" height="250"></canvas>
+        </div>
+        <div class=" col-md-6">
+            <canvas id="platforms-chart" width="400" height="250"></canvas>
+        </div>
     </div>
 </div>
 
@@ -61,9 +71,39 @@
     let shortUrl = null;
 
     $(document).ready(function () {
-        shortUrl = resolveLastSegment();
-        console.log('ready ' + shortUrl);
+        shortUrl = null;
+
+        shortUrl = resolveLastSegment(shortUrl);
         getData(shortUrl);
+    });
+
+    $('form').submit(function (event) {
+
+        event.preventDefault();
+
+        shortUrl = $("#short_url").val();
+        shortUrl = resolveLastSegment(shortUrl);
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'GET',
+            url: '/get_data',
+            data: {
+                'short_url': shortUrl
+            },
+            success: function (data) {
+                if (data.status === 'failed') {
+                    showSnackbar(data.status, data.msg);
+                } else {
+                    stats = data;
+                    $("#count_text").text('Переходов по ссылке ' + stats['result']['count']);
+                    draw();
+                }
+            }
+        });
+
     });
 
     function getData(shortUrl) {
@@ -91,6 +131,7 @@
                     showSnackbar(data.status, data.msg);
                 } else {
                     stats = data;
+                    $("#count_text").text('Переходов по ссылке ' + stats['result']['count']);
                     draw();
                 }
             }
@@ -98,8 +139,10 @@
     }
 
     function resolveLastSegment(url) {
+        console.log(url);
         if (url === null) {
             url = location.href;
+            console.log('here');
         }
         let array = url.split('/');
         let lastSegment = array[array.length - 1];
@@ -114,7 +157,6 @@
         drawChart('platforms', 'Операционные системы', 'platforms-chart');
 
         function drawChart(arrayName, title, divId) {
-            // console.log(stats['result'][arrayName]['labels']);
             new Chart(document.getElementById(divId), {
                 type: 'doughnut',
                 data: {
@@ -130,7 +172,8 @@
                 options: {
                     title: {
                         display: true,
-                        text: title
+                        text: title,
+                        fontSize: 20
                     }
                 }
             });
