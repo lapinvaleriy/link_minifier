@@ -38,9 +38,9 @@ class LinkService
      */
     public function create($rootUrl, $customUrl, $expiryDate)
     {
-        if (!$this->isRootUrlCorrect($rootUrl)) {
-            throw new UrlDoesNotExistException();
-        }
+//        if (!$this->isRootUrlCorrect($rootUrl)) {
+//            throw new UrlDoesNotExistException();
+//        }
 
         if ($customUrl != null) {
             if ($this->linkRepository->isShortLinkExists($customUrl)) {
