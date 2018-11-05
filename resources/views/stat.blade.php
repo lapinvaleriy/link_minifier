@@ -96,6 +96,7 @@
             success: function (data) {
                 if (data.status === 'failed') {
                     showSnackbar(data.status, data.msg);
+                    clearInfo();
                 } else {
                     stats = data;
                     $("#count_text").text('Переходов по ссылке ' + stats['result']['count']);
@@ -129,6 +130,7 @@
             success: function (data) {
                 if (data.status === 'failed') {
                     showSnackbar(data.status, data.msg);
+                    clearInfo();
                 } else {
                     stats = data;
                     $("#count_text").text('Переходов по ссылке ' + stats['result']['count']);
@@ -138,11 +140,21 @@
         });
     }
 
+    function clearInfo() {
+        // let allCanvases = ['countries-chart', 'languages-chart', 'browsers-chart', 'platforms-chart'];
+        //
+        // if (allCanvases.length !== 0) {
+        //     for (let i = 0; allCanvases.length; i++) {
+        //         let canvas = document.getElementById(allCanvases[i]);
+        //         let context = canvas.getContext("2d");
+        //         context.clearRect(0, 0, canvas.width, canvas.height);
+        //     }
+        // }
+    }
+
     function resolveLastSegment(url) {
-        console.log(url);
         if (url === null) {
             url = location.href;
-            console.log('here');
         }
         let array = url.split('/');
         let lastSegment = array[array.length - 1];

@@ -30,7 +30,6 @@ class StatisticsController extends Controller
         ]);
     }
 
-
     public function show()
     {
         return view('stat');
@@ -58,8 +57,6 @@ class StatisticsController extends Controller
             ];
         }
 
-        $count = count($data);
-
         foreach ($data as $dat) {
             $countries[] = $dat->country;
             $browsers[] = $dat->browser;
@@ -67,65 +64,35 @@ class StatisticsController extends Controller
             $platforms[] = $dat->platform;
         }
 
-        for ($i = 0; $i < count($countries); $i++) {
-            $count = 0;
-            $countr = $countries[$i];
-            for ($j = 0; $j < count($countries); $j++) {
-                if ($countries[$i] === $countries[$j])
-                    $count++;
-            }
-            $c[$countr] = $count;
-        }
+        $count = count($data);
+        $array = [$countries, $browsers, $languages, $platforms];
 
-        for ($i = 0; $i < count($browsers); $i++) {
-            $count = 0;
-            $countr = $browsers[$i];
-            for ($j = 0; $j < count($browsers); $j++) {
-                if ($browsers[$i] === $browsers[$j])
-                    $count++;
+        for ($k = 0; $k < count($array); $k++) {
+            for ($i = 0; $i < count($array[$k]); $i++) {
+                $count = 0;
+                $countr = $array[$k][$i];
+                for ($j = 0; $j < count($array[$k]); $j++) {
+                    if ($array[$k][$i] === $array[$k][$j])
+                        $count++;
+                }
+                $result[$countr] = $count;
             }
-            $b[$countr] = $count;
-        }
 
-        for ($i = 0; $i < count($languages); $i++) {
-            $count = 0;
-            $countr = $languages[$i];
-            for ($j = 0; $j < count($languages); $j++) {
-                if ($languages[$i] === $languages[$j])
-                    $count++;
-            }
-            $l[$countr] = $count;
-        }
+            $array[$k] = [
+                'labels' => array_keys($result),
+                'count' => array_values($result)
+            ];
 
-        for ($i = 0; $i < count($platforms); $i++) {
-            $count = 0;
-            $countr = $platforms[$i];
-            for ($j = 0; $j < count($platforms); $j++) {
-                if ($platforms[$i] === $platforms[$j])
-                    $count++;
-            }
-            $p[$countr] = $count;
+            $result = [];
         }
 
         return [
             'result' => [
                 'count' => $count,
-                'countries' => [
-                    'labels' => array_keys($c),
-                    'count' => array_values($c)
-                ],
-                'languages' => [
-                    'labels' => array_keys($l),
-                    'count' => array_values($l)
-                ],
-                'browsers' => [
-                    'labels' => array_keys($b),
-                    'count' => array_values($b)
-                ],
-                'platforms' => [
-                    'labels' => array_keys($p),
-                    'count' => array_values($p)
-                ],
+                'countries' => $array[0],
+                'browsers' => $array[1],
+                'languages' => $array[2],
+                'platforms' => $array[3],
             ]
         ];
     }

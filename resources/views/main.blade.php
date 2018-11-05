@@ -50,13 +50,13 @@
             </div>
             <br>
             <br>
-            <div>
-                <input style="width: 70%;background-color: #ffffff" class="form-control" id="result_short" readonly
-                       placeholder="Короткая ссылка...">
-                <br>
-                <input style="width: 70%;background-color: #ffffff" class="form-control" id="result_stat" readonly
-                       placeholder="Ссылка на статистику...">
-            </div>
+            {{--<div>--}}
+            {{--<input style="width: 70%;background-color: #ffffff" class="form-control" id="result_short" readonly--}}
+            {{--placeholder="Короткая ссылка...">--}}
+            {{--<br>--}}
+            {{--<input style="width: 70%;background-color: #ffffff" class="form-control" id="result_stat" readonly--}}
+            {{--placeholder="Ссылка на статистику...">--}}
+            {{--</div>--}}
         </form>
 
         <div id="successSnackbar"></div>
@@ -95,16 +95,42 @@
                 },
                 success: function (data) {
                     if (data.status === 'success') {
-                        $("#result_short").val(data.short_url);
-                        $("#result_stat").val(data.stat_url);
+                        // $("#result_short").val(data.short_url);
+                        // $("#result_stat").val(data.stat_url);
+                        showResult(data);
                         showSnackbar(data.status, data.msg);
                     } else if (data.status === 'failed') {
+                        deleteResultDiv();
                         showSnackbar(data.status, data.msg);
                     }
                 }
             });
         });
     });
+
+    function showResult(data) {
+        deleteResultDiv();
+
+        $('form').after(function () {
+            $(".main-contrainer").css("height", 600);
+            let res = '<div class="result">';
+
+            res +=
+                '<span style="color:#fff">Ваша короткая ссылка </span>' +
+                '<div style="max-width: 70%" class="alert alert-light">' + data.short_url + '</div>' +
+                '<span style="color:#fff">Ваша ссылка для статистики</span>' +
+                '<div style="max-width: 70%" class="alert alert-light">' + data.stat_url + '</div>';
+
+            res += '</div>';
+
+            return res;
+        });
+    }
+
+    function deleteResultDiv() {
+        $('.result').remove();
+        $(".main-contrainer").css("height", 380);
+    }
 
 
     function showSnackbar(status, msg) {
