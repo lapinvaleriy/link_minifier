@@ -22,8 +22,9 @@
         </ul>
     </nav>
 </header>
-<div class="err_container">
+<div class="err-container">
     <div style="text-align: center;" class="container">
+        <br>
         <br>
         <h1>{{$error_msg}}</h1>
     </div>

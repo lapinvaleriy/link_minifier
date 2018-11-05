@@ -12,7 +12,7 @@
 <body>
 <header>
     <nav class="navbar navbar-expand-sm bg-light navbar-light">
-        <a class="navbar-brand" href="#">Сокращатель</a>
+        <a class="navbar-brand" href="{{url('/')}}">Сокращатель</a>
 
         <ul class="navbar-nav float-right">
             <li class="nav-item">
@@ -52,8 +52,8 @@
             <br>
         </form>
 
-        <div id="successSnackbar"></div>
-        <div id="failedSnackbar"></div>
+        <div id="success_snackbar"></div>
+        <div id="failed_snackbar"></div>
     </div>
 </div>
 <br>
@@ -125,22 +125,21 @@
         $(".main-contrainer").css("height", 380);
     }
 
-
     function showSnackbar(status, msg) {
         let snackBar;
 
         if (status === "success") {
-            snackBar = document.getElementById("successSnackbar");
+            snackBar = document.getElementById("success_snackbar");
         } else if (status === "failed") {
-            snackBar = document.getElementById("failedSnackbar");
+            snackBar = document.getElementById("failed_snackbar");
         }
 
         snackBar.className = "show";
 
         if (status === "success") {
-            $("#successSnackbar").text(msg);
+            $("#success_snackbar").text(msg);
         } else if (status === "failed") {
-            $("#failedSnackbar").text(msg);
+            $("#failed_snackbar").text(msg);
         }
 
         setTimeout(function () {

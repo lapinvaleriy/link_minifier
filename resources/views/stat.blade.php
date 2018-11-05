@@ -21,7 +21,7 @@
         </ul>
     </nav>
 </header>
-<div class="stat_container">
+<div class="stat-container">
     <div class="container">
         <br>
         <h1>Статистика</h1>
@@ -35,30 +35,31 @@
             </div>
         </form>
     </div>
-    <div id="successSnackbar"></div>
-    <div id="failedSnackbar"></div>
+    <div id="success_snackbar"></div>
+    <div id="failed_snackbar"></div>
 </div>
 <div class="container" style="text-align: center">
     <br>
-    <span style="font-size: 30px" id="count_text"></span>
+    <span style="font-size: 30px; font-family: Georgia;" id="stat_for_text"></span>
+    <p><span style="font-size: 30px; font-family: Georgia;" id="count_text"></span></p>
     <br>
     <br>
     <div class="row">
-        <div class=" col-md-6">
-            <canvas id="countries-chart" width="400" height="250"></canvas>
+        <div class="col-md-6">
+            <canvas id="countries_chart" width="400" height="250"></canvas>
         </div>
         <div class=" col-md-6">
-            <canvas id="languages-chart" width="400" height="250"></canvas>
+            <canvas id="languages_chart" width="400" height="250"></canvas>
         </div>
     </div>
     <br>
     <br>
     <div class="row">
-        <div class=" col-md-6">
-            <canvas id="browsers-chart" width="400" height="250"></canvas>
+        <div class="col-md-6">
+            <canvas id="browsers_chart" width="400" height="250"></canvas>
         </div>
-        <div class=" col-md-6">
-            <canvas id="platforms-chart" width="400" height="250"></canvas>
+        <div class="col-md-6">
+            <canvas id="platforms_chart" width="400" height="250"></canvas>
         </div>
     </div>
 </div>
@@ -98,7 +99,8 @@
                     showSnackbar(data.status, data.msg);
                 } else {
                     stats = data;
-                    $("#count_text").text('Переходов по ссылке ' + stats['result']['count']);
+                    $("#stat_for_text").text("Статистика для ссылки {{ route('main')}}/" + shortUrl);
+                    $("#count_text").text("Переходов по ссылке: " + stats['result']['count']);
                     draw();
                 }
             }
@@ -131,7 +133,8 @@
                     showSnackbar(data.status, data.msg);
                 } else {
                     stats = data;
-                    $("#count_text").text('Переходов по ссылке ' + stats['result']['count']);
+                    $("#stat_for_text").text("Статистика для ссылки {{ route('main')}}/" + shortUrl);
+                    $("#count_text").text("Переходов по ссылке: " + stats['result']['count']);
                     draw();
                 }
             }
@@ -149,10 +152,10 @@
     }
 
     function draw() {
-        drawChart('countries', 'Страны', 'countries-chart');
-        drawChart('languages', 'Языки', 'languages-chart');
-        drawChart('browsers', 'Браузеры', 'browsers-chart');
-        drawChart('platforms', 'Операционные системы', 'platforms-chart');
+        drawChart('countries', 'Страны', 'countries_chart');
+        drawChart('languages', 'Языки', 'languages_chart');
+        drawChart('browsers', 'Браузеры', 'browsers_chart');
+        drawChart('platforms', 'Операционные системы', 'platforms_chart');
 
         function drawChart(arrayName, title, divId) {
             new Chart(document.getElementById(divId), {
@@ -182,17 +185,17 @@
         let snackBar;
 
         if (status === "success") {
-            snackBar = document.getElementById("successSnackbar");
+            snackBar = document.getElementById("success_snackbar");
         } else if (status === "failed") {
-            snackBar = document.getElementById("failedSnackbar");
+            snackBar = document.getElementById("failed_snackbar");
         }
 
         snackBar.className = "show";
 
         if (status === "success") {
-            $("#successSnackbar").text(msg);
+            $("#success_snackbar").text(msg);
         } else if (status === "failed") {
-            $("#failedSnackbar").text(msg);
+            $("#failed_snackbar").text(msg);
         }
 
         setTimeout(function () {

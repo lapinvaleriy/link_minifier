@@ -57,10 +57,10 @@ class StatisticsService
         $data = Statistics::select('country', 'language', 'browser', 'platform')
             ->where('link_id', $link->id)->get();
 
-        if (empty($data)) {
+        if (!count($data)) {
             return [
                 'status' => 'failed',
-                'msg' => 'Нет статистики по данной ссылке'
+                'msg' => 'Нет статистики для данной ссылки'
             ];
         }
 
@@ -71,7 +71,7 @@ class StatisticsService
             $platforms[] = $dat->platform;
         }
 
-        $count = count($data);
+        $clickCount = count($countries);
         $array = [$countries, $browsers, $languages, $platforms];
 
         for ($k = 0; $k < count($array); $k++) {
@@ -95,7 +95,7 @@ class StatisticsService
 
         return [
             'result' => [
-                'count' => $count,
+                'count' => $clickCount,
                 'countries' => $array[0],
                 'browsers' => $array[1],
                 'languages' => $array[2],
