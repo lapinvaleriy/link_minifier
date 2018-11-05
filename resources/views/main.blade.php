@@ -50,13 +50,6 @@
             </div>
             <br>
             <br>
-            {{--<div>--}}
-            {{--<input style="width: 70%;background-color: #ffffff" class="form-control" id="result_short" readonly--}}
-            {{--placeholder="Короткая ссылка...">--}}
-            {{--<br>--}}
-            {{--<input style="width: 70%;background-color: #ffffff" class="form-control" id="result_stat" readonly--}}
-            {{--placeholder="Ссылка на статистику...">--}}
-            {{--</div>--}}
         </form>
 
         <div id="successSnackbar"></div>
