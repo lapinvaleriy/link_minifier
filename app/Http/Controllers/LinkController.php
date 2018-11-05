@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\ShortUrlAlreadyExistsException;
-use App\Exceptions\UrlDoesNotExistException;
+use App\Exceptions\UrlMinifierException;
 use App\Models\Link;
 use App\Services\LinkService;
 use App\Services\StatisticsService;
@@ -38,13 +37,8 @@ class LinkController extends Controller
             $shortUrl = $request->root() . '/' . $result;
             $statUrl = $request->root() . '/stat/' . $result;
             $status = 'success';
-            $msg = 'Ok';
-        } catch (ShortUrlAlreadyExistsException $e) {
-            $shortUrl = null;
-            $statUrl = null;
-            $status = 'failed';
-            $msg = $e->getMessage();
-        } catch (UrlDoesNotExistException $e) {
+            $msg = 'Ссылка успешно сгенерирована';
+        } catch (UrlMinifierException $e) {
             $shortUrl = null;
             $statUrl = null;
             $status = 'failed';
@@ -57,11 +51,6 @@ class LinkController extends Controller
             'stat_url' => $statUrl,
             'msg' => $msg
         ];
-    }
-
-    public function show()
-    {
-        return view('main');
     }
 
     public function redirect(Request $request, $url)
@@ -83,5 +72,10 @@ class LinkController extends Controller
         $this->statisticsService->addStat($link, $request);
 
         return redirect($link->root_url);
+    }
+
+    public function show()
+    {
+        return view('main');
     }
 }

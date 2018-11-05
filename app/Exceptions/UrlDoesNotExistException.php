@@ -11,7 +11,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class UrlDoesNotExistException extends Exception
+class UrlDoesNotExistException extends UrlMinifierException
 {
-    protected $message = "Такого url не существует";
+    protected $message = "Такого адреса не существует";
 }

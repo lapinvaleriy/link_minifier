@@ -57,6 +57,9 @@ class LinkService
         return $shortUrl;
     }
 
+    /*
+     * Try to recognize is root url is correct.
+     */
     private function isRootUrlCorrect($rootUrl)
     {
         $client = new Client();
@@ -76,8 +79,13 @@ class LinkService
 
     private function generateShortUrl()
     {
-        //TODO check here if unique code is already exist in db and regenerate if true
-        $shortUrl = RandomGenerator::generateCode();
+        //not the best way to check unique, I know
+        while (true) {
+            $shortUrl = RandomGenerator::generateCode();
+
+            if (!$this->linkRepository->isShortLinkExists($shortUrl))
+                break;
+        }
 
         return $shortUrl;
     }

@@ -11,7 +11,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class ShortUrlAlreadyExistsException extends Exception
+class ShortUrlAlreadyExistsException extends UrlMinifierException
 {
-    protected $message = "Уже есть";
+    protected $message = "Такая короткая ссылка уже сущствует. Выберите другую";
 }
