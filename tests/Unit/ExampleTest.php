@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Link;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -14,6 +15,9 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
-        $this->assertTrue(true);
+//        $this->assertTrue(true);
+
+        $link = new Link;
+        var_dump($link);
     }
 }
